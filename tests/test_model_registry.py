@@ -73,6 +73,8 @@ def _make_openai_model_infos() -> list[ModelInfo]:
         ),
         ModelInfo(id="o3", provider="openai"),
         ModelInfo(id="o4-mini", provider="openai"),
+        ModelInfo(id="gpt-audio-2025-08-28", provider="openai"),
+        ModelInfo(id="gpt-4o-realtime-preview", provider="openai"),
     ]
 
 
@@ -230,6 +232,12 @@ class TestTierClassification:
     def test_google_fast(self):
         assert _classify_tier("google", "gemini-3-flash-preview") == "fast"
         assert _classify_tier("google", "gemini-2.5-flash") == "fast"
+
+    def test_openai_audio_excluded(self):
+        """Audio/realtime/embedding models should NOT match any tier."""
+        assert _classify_tier("openai", "gpt-audio-2025-08-28") is None
+        assert _classify_tier("openai", "gpt-4o-realtime-preview") is None
+        assert _classify_tier("openai", "gpt-4o-audio-preview") is None
 
     def test_unknown_model_returns_none(self):
         assert _classify_tier("openai", "totally-unknown-model") is None

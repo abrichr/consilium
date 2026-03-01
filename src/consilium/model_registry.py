@@ -76,9 +76,10 @@ ALL_TIERS = {"flagship", "fast", "reasoning", "reasoning_fast", "fastest"}
 _OPENAI_TIER_PATTERNS = [
     (re.compile(r"^o\d+-mini"), "reasoning_fast"),
     (re.compile(r"^o\d+"), "reasoning"),
-    (re.compile(r"gpt-.*-mini"), "fast"),
-    (re.compile(r"gpt-.*-nano"), "fastest"),
-    (re.compile(r"^gpt-"), "flagship"),
+    (re.compile(r"^gpt-\d+(\.\d+)?-mini"), "fast"),
+    (re.compile(r"^gpt-\d+(\.\d+)?-nano"), "fastest"),
+    (re.compile(r"^gpt-\d+(\.\d+)?$"), "flagship"),
+    (re.compile(r"^gpt-\d+(\.\d+)?-pro"), "flagship"),
 ]
 
 _ANTHROPIC_TIER_PATTERNS = [
@@ -241,7 +242,7 @@ def _list_anthropic() -> List[ModelInfo]:
 
 def _list_google() -> List[ModelInfo]:
     """List models from Google Generative AI API."""
-    import google.generativeai as genai
+    from google import genai
 
     client = genai.Client()
     response = client.models.list()
