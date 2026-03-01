@@ -19,7 +19,7 @@ class ProviderConfig:
     """Configuration for a single LLM provider/model."""
 
     provider: str  # "openai", "anthropic", "google"
-    model: str  # e.g. "gpt-4.1", "claude-sonnet-4-5-20250514"
+    model: str  # e.g. "gpt-5.2", "claude-sonnet-4-6"
     api_key: str | None = None  # falls back to env var
     temperature: float = 0.7
     max_tokens: int = 4096

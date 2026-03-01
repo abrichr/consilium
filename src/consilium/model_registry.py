@@ -116,7 +116,7 @@ def _classify_tier(provider: str, model_id: str) -> str | None:
 # Version extraction for sorting
 # ---------------------------------------------------------------------------
 
-_VERSION_RE = re.compile(r"(\d+(?:\.\d+)*)")
+_VERSION_RE = re.compile(r"(\d+(?:[.\-]\d+)*)")
 
 
 def _extract_version_tuple(model_id: str) -> tuple[int, ...]:
@@ -132,8 +132,8 @@ def _extract_version_tuple(model_id: str) -> tuple[int, ...]:
     matches = _VERSION_RE.findall(model_id)
     if not matches:
         return (0,)
-    # Use the first version-like match
-    return tuple(int(p) for p in matches[0].split("."))
+    # Use the first version-like match; split on both dots and hyphens
+    return tuple(int(p) for p in re.split(r"[.\-]", matches[0]))
 
 
 # ---------------------------------------------------------------------------

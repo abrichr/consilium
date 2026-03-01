@@ -83,7 +83,7 @@ class Council:
     """Orchestrates multi-LLM querying, cross-review, and synthesis.
 
     Args:
-        models: List of model strings (e.g. ``["gpt-4.1", "claude-sonnet-4-5-20250514"]``)
+        models: List of model strings (e.g. ``["gpt-5.2", "claude-sonnet-4-6"]``)
             or :class:`ProviderConfig` objects.
         chairman: Model string or config for the synthesis stage.
         max_workers: Max threads for parallel queries.

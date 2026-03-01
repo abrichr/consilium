@@ -251,7 +251,13 @@ class TestVersionExtraction:
         assert _extract_version_tuple("gpt-5") == (5,)
 
     def test_claude_version(self):
-        assert _extract_version_tuple("claude-opus-4-6") == (4,)
+        assert _extract_version_tuple("claude-opus-4-6") == (4, 6)
+
+    def test_claude_version_sorting(self):
+        """Verify claude-opus-4-6 sorts higher than claude-opus-4-5."""
+        v46 = _extract_version_tuple("claude-opus-4-6")
+        v45 = _extract_version_tuple("claude-opus-4-5")
+        assert v46 > v45
 
     def test_gemini_version(self):
         assert _extract_version_tuple("gemini-2.5-flash") == (2, 5)

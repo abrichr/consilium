@@ -9,7 +9,7 @@ Example::
 
     result = council_query(
         "What are the steps to open Notepad on Windows 11?",
-        models=["gpt-4.1", "claude-sonnet-4-5-20250514"],
+        models=["gpt-5.2", "claude-sonnet-4-6"],
     )
     print(result["final_answer"])
 """
@@ -39,7 +39,7 @@ def council_query(
     Args:
         question: The question / prompt to send.
         images: Optional list of image bytes (PNG).
-        models: Model identifiers (e.g. ``["gpt-4.1", "claude-sonnet-4-5-20250514"]``).
+        models: Model identifiers (e.g. ``["gpt-5.2", "claude-sonnet-4-6"]``).
         chairman: Chairman model identifier.
         budget: Maximum spend in USD.
         system: Optional system prompt.

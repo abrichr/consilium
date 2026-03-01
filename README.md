@@ -11,7 +11,7 @@ Consilium queries multiple LLMs in parallel, has each model review the others' r
 │                    STAGE 1: QUERY                       │
 │                                                         │
 │   ┌─────────┐   ┌──────────┐   ┌─────────────────┐     │
-│   │ GPT-4.1 │   │ Claude   │   │ Gemini 2.5 Pro  │     │
+│   │ GPT-5.2 │   │ Claude   │   │ Gemini 3.1 Pro  │     │
 │   │         │   │ Sonnet   │   │                 │     │
 │   └────┬────┘   └────┬─────┘   └────────┬────────┘     │
 │        │             │                  │               │
@@ -216,9 +216,9 @@ Consilium supports any model from these providers:
 
 | Provider | Models | Env Var |
 |----------|--------|---------|
-| OpenAI | `gpt-5.2`, `gpt-5.2-pro`, `gpt-5`, `gpt-5-mini`, `gpt-5.2`, `o3`, `o4-mini` | `OPENAI_API_KEY` |
+| OpenAI | `gpt-5.2`, `gpt-5.2-pro`, `gpt-5`, `gpt-5-mini`, `o3`, `o4-mini` | `OPENAI_API_KEY` |
 | Anthropic | `claude-opus-4-6`, `claude-sonnet-4-6`, `claude-haiku-4-5`, `claude-sonnet-4-5` | `ANTHROPIC_API_KEY` |
-| Google | `gemini-3.1-pro`, `gemini-3-flash`, `gemini-3.1-pro`, `gemini-2.5-flash` | `GOOGLE_API_KEY` |
+| Google | `gemini-3.1-pro`, `gemini-3-flash`, `gemini-2.5-pro`, `gemini-2.5-flash` | `GOOGLE_API_KEY` |
 
 Use any model with the `provider/model` format:
 
