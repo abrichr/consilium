@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v0.3.2 (2026-03-02)
+
+### Bug Fixes
+
+- Rename PyPI package to openadapt-consilium
+  ([#6](https://github.com/OpenAdaptAI/openadapt-consilium/pull/6),
+  [`6104726`](https://github.com/OpenAdaptAI/openadapt-consilium/commit/61047268fc63070bffc04d8521278b50a9b091d0))
+
+The `consilium` name on PyPI is owned by another project. Rename to `openadapt-consilium` to match
+  the repo name. The Python import name remains `consilium` (unchanged).
+
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
+
+
 ## v0.3.1 (2026-03-02)
 
 ### Bug Fixes
