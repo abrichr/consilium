@@ -201,7 +201,7 @@ def _make_google_sdk_models():
         ("models/gemini-3-flash-preview", "Gemini 3 Flash Preview", ["generateContent", "countTokens"]),
         ("models/gemini-2.5-pro", "Gemini 2.5 Pro", ["generateContent", "countTokens"]),
         ("models/gemini-2.5-flash", "Gemini 2.5 Flash", ["generateContent", "countTokens"]),
-        # Non-Gemini model with generateContent — should be filtered out
+        # Non-Gemini, embedContent only — filtered by both checks
         ("models/text-embedding-004", "Text Embedding 004", ["embedContent"]),
         # Gemini without generateContent — should be filtered out
         ("models/gemini-embedding-exp", "Gemini Embedding Exp", ["embedContent"]),
