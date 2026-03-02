@@ -1,7 +1,31 @@
 # CHANGELOG
 
 
-## v0.1.0 (2026-03-02)
+## v0.3.1 (2026-03-02)
+
+### Bug Fixes
+
+- Resolve lint errors and restore version to 0.3.0
+  ([#4](https://github.com/OpenAdaptAI/openadapt-consilium/pull/4),
+  [`cd54594`](https://github.com/OpenAdaptAI/openadapt-consilium/commit/cd5459423f4092d50dd874bea2469652e234d733))
+
+- Remove unused imports: `Any` and `DEFAULT_MODELS` from core.py, `sys` from __main__.py - Remove
+  unused variable assignment in test_council.py - Restore version to 0.3.0 (reverted by erroneous
+  semantic-release run)
+
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
+
+- Update URLs from abrichr/consilium to OpenAdaptAI/openadapt-consilium
+  ([#2](https://github.com/OpenAdaptAI/openadapt-consilium/pull/2),
+  [`73b6474`](https://github.com/OpenAdaptAI/openadapt-consilium/commit/73b647475b7fc2ed00f523c0c9983fa2f7bcc373))
+
+The repo was renamed from abrichr/consilium to OpenAdaptAI/openadapt-consilium. Update all 3
+  install/clone URLs in README.md to point to the correct location.
+
+Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
+
+
+## v0.3.0 (2026-03-02)
 
 ### Bug Fixes
 
@@ -33,15 +57,6 @@ Replaces the deprecated `google.generativeai` SDK with the new `google-genai` SD
   about the deprecated package.
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
-
-- Update URLs from abrichr/consilium to OpenAdaptAI/openadapt-consilium
-  ([#2](https://github.com/OpenAdaptAI/openadapt-consilium/pull/2),
-  [`73b6474`](https://github.com/OpenAdaptAI/openadapt-consilium/commit/73b647475b7fc2ed00f523c0c9983fa2f7bcc373))
-
-The repo was renamed from abrichr/consilium to OpenAdaptAI/openadapt-consilium. Update all 3
-  install/clone URLs in README.md to point to the correct location.
-
-Co-authored-by: Claude Opus 4.6 <noreply@anthropic.com>
 
 - Version extraction for hyphen-separated model IDs + stale references
   ([`2787905`](https://github.com/OpenAdaptAI/openadapt-consilium/commit/278790563b686c8e0461c0ad34944d2ce9d4d376))
