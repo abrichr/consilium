@@ -1,6 +1,53 @@
 # CHANGELOG
 
 
+## v0.4.1 (2026-07-28)
+
+### Bug Fixes
+
+- Clear ruff 0.16 findings and bound the linter version
+  ([#11](https://github.com/OpenAdaptAI/openadapt-consilium/pull/11),
+  [`f1b0b80`](https://github.com/OpenAdaptAI/openadapt-consilium/commit/f1b0b80a2ab6c5897f54e66fb8cf6161acb255cd))
+
+`main` was red on 54 ruff errors with no code change behind them. The cause is an unpinned linter:
+  dev deps ask for `ruff>=0.4`, this project selects no rules explicitly, and ruff 0.16.0 grew its
+  DEFAULT rule set from 59 rules to 413. Verified directly against this tree:
+
+ruff 0.11.0 All checks passed! ruff 0.14.0 All checks passed! ruff 0.16.0 Found 54 errors.
+
+`main` last ran CI green on 2026-03-03 and has had no push since, so the findings appeared the
+  moment CI next ran, on an unrelated PR.
+
+Fixed in code (47): * UP006/UP035 (41) - `List`/`Dict` -> `list`/`dict`; target-version is py310. *
+  I001 (4) - import ordering. * FURB188 (1) - `model_id[len("models/"):]` ->
+  `.removeprefix("models/")`. * SIM117 (1) - combined a nested `with` in test_model_registry. *
+  PLW0602 (1) - dropped a `global _cache` in `clear_cache`, which only mutates the dict in place.
+  `set_cache_ttl` does rebind and keeps its `global`.
+
+Fixed as a real defect (1): * S110 - `providers.get_default_models` caught every exception and
+  `pass`ed, so a credential or network failure was indistinguishable from a successful
+  auto-detection that legitimately returned the hardcoded list. It now logs a warning naming the
+  exception type. The fallback behaviour is unchanged.
+
+Disabled deliberately (5): * BLE001 is ignored in `[tool.ruff.lint]`, with the reasoning inline in
+  pyproject.toml, rather than suppressed with five `# noqa`s. Consilium fans out to three
+  third-party LLM SDKs concurrently and is designed to survive any one of them failing; all five
+  sites are those boundaries and each already degrades to a named fallback. openai, anthropic and
+  google-genai share no exception hierarchy, so there is nothing to narrow to that would not
+  silently start crashing the council the next time a vendor adds an exception type. Narrowing would
+  change behaviour, not style.
+
+Also bounded `ruff` to `>=0.16,<0.17` so the next default-rule expansion is an explicit decision
+  instead of a surprise red `main`.
+
+No autofix in this change alters behaviour; `removeprefix` is exactly equivalent to the conditional
+  slice it replaces. 91 tests pass, deselecting the live-API suite as CI does.
+
+Claude-Session: https://claude.ai/code/session_01NyCHrzA1psrKMFfroYbzaM
+
+Co-authored-by: Claude Opus 5 <noreply@anthropic.com>
+
+
 ## v0.4.0 (2026-03-03)
 
 ### Features
