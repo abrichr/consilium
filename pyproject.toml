@@ -27,7 +27,13 @@ dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
     "pytest-timeout>=2.0",
-    "ruff>=0.4",
+    # Bounded on purpose. `ruff>=0.4` unpinned is why `main` went red without
+    # a code change: ruff 0.16.0 grew its DEFAULT rule set from 59 rules to
+    # 413, and this project selects no rules explicitly, so it silently
+    # inherited 354 new ones. 0.11 and 0.14 both pass this tree; 0.16 reports
+    # 54 findings. Raise the ceiling deliberately, with the findings fixed in
+    # the same change.
+    "ruff>=0.16,<0.17",
 ]
 
 [project.scripts]
@@ -54,6 +60,25 @@ Repository = "https://github.com/OpenAdaptAI/openadapt-consilium"
 [tool.ruff]
 target-version = "py310"
 line-length = 88
+
+[tool.ruff.lint]
+# BLE001 (blind `except Exception`) is the one rule in ruff 0.16's expanded
+# defaults that is wrong for this codebase, so it is disabled deliberately
+# rather than suppressed site by site.
+#
+# Consilium's whole job is to fan out to three third-party LLM SDKs
+# concurrently and survive any one of them failing. Every one of the five
+# reported sites is such a boundary: `Future.result()` in the stage-1/stage-2
+# thread pools, the provider `list_models` probe, per-provider `get_latest`,
+# and the auto-detection fallback. Each already degrades to a named fallback
+# or an `[ERROR: ...]` placeholder.
+#
+# There is no exception base class to narrow to. openai, anthropic and
+# google-genai share no hierarchy, and each can surface httpx, ssl, json and
+# auth errors from its own transport. Enumerating them would silently
+# reintroduce the crash-the-council behaviour the first time a vendor added an
+# exception type. Narrowing here would change behaviour, not style.
+ignore = ["BLE001"]
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]

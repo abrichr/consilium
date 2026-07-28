@@ -8,10 +8,13 @@ from __future__ import annotations
 
 import base64
 import dataclasses
+import logging
 import os
-from typing import Any, Dict, List
+from typing import Any
 
 from consilium.cost import TokenUsage
+
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass
@@ -86,7 +89,7 @@ def _query_openai(
             )
     messages.append({"role": "user", "content": content})
 
-    kwargs: Dict[str, Any] = {
+    kwargs: dict[str, Any] = {
         "model": config.model,
         "messages": messages,
         "temperature": config.temperature,
@@ -134,7 +137,7 @@ def _query_anthropic(
             )
     content.append({"type": "text", "text": prompt})
 
-    kwargs: Dict[str, Any] = {
+    kwargs: dict[str, Any] = {
         "model": config.model,
         "max_tokens": config.max_tokens,
         "messages": [{"role": "user", "content": content}],
@@ -248,7 +251,7 @@ def query_model(
 # Parse "provider/model" shorthand
 # ---------------------------------------------------------------------------
 
-MODEL_ALIASES: Dict[str, tuple[str, str]] = {
+MODEL_ALIASES: dict[str, tuple[str, str]] = {
     # OpenAI — GPT-5.x series (current flagships, March 2026)
     "gpt-5.2": ("openai", "gpt-5.2"),
     "gpt-5.2-pro": ("openai", "gpt-5.2-pro"),
@@ -310,7 +313,7 @@ def parse_model_string(model_str: str) -> ProviderConfig:
 
 
 # Default council composition — latest flagship from each provider
-DEFAULT_MODELS: List[str] = [
+DEFAULT_MODELS: list[str] = [
     "gpt-5.2",
     "claude-sonnet-4-6",
     "gemini-3.1-pro",
@@ -319,7 +322,7 @@ DEFAULT_MODELS: List[str] = [
 DEFAULT_CHAIRMAN: str = "claude-sonnet-4-6"
 
 
-def get_default_models() -> List[str]:
+def get_default_models() -> list[str]:
     """Return default model IDs, auto-detecting latest via provider APIs.
 
     Tries :func:`model_registry.get_default_models` first, falling back
@@ -333,6 +336,13 @@ def get_default_models() -> List[str]:
         models = _registry_defaults()
         if models:
             return models
-    except Exception:
-        pass
+    except Exception as exc:
+        # Any provider SDK, credential, or network failure falls back to the
+        # hardcoded list. Log it: silently swallowing this made a stale
+        # DEFAULT_MODELS indistinguishable from a live auto-detected one.
+        logger.warning(
+            "Model auto-detection failed (%s: %s); using hardcoded defaults.",
+            type(exc).__name__,
+            exc,
+        )
     return list(DEFAULT_MODELS)
