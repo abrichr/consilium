@@ -8,12 +8,10 @@ as new models are released.
 from __future__ import annotations
 
 import dataclasses
-from typing import Dict
-
 
 # Pricing per 1M tokens (input, output) in USD.
 # Updated March 2026. See provider pricing pages for current rates.
-MODEL_PRICING: Dict[str, tuple[float, float]] = {
+MODEL_PRICING: dict[str, tuple[float, float]] = {
     # Anthropic — Claude 4.6 (Feb 2026)
     "claude-opus-4-6": (15.0, 75.0),
     "claude-sonnet-4-6": (3.0, 15.0),
@@ -90,9 +88,9 @@ class CostTracker:
     def total_output_tokens(self) -> int:
         return sum(u.output_tokens for u in self.usages)
 
-    def breakdown_by_model(self) -> Dict[str, float]:
+    def breakdown_by_model(self) -> dict[str, float]:
         """Return a dict mapping model name to total cost for that model."""
-        out: Dict[str, float] = {}
+        out: dict[str, float] = {}
         for u in self.usages:
             out[u.model] = out.get(u.model, 0.0) + u.cost_usd
         return out

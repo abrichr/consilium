@@ -16,7 +16,7 @@ Example::
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from consilium.core import Council, CouncilResult
 
@@ -31,7 +31,7 @@ def council_query(
     system: str | None = None,
     skip_review: bool = False,
     json_schema: dict | None = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Query the LLM council and return a structured dict.
 
     This is the primary programmatic entry point for agents and scripts.
@@ -62,7 +62,7 @@ def council_query(
     return _result_to_dict(result)
 
 
-def _result_to_dict(result: CouncilResult) -> Dict[str, Any]:
+def _result_to_dict(result: CouncilResult) -> dict[str, Any]:
     """Serialize a :class:`CouncilResult` into a plain dict."""
     return {
         "final_answer": result.final_answer,
