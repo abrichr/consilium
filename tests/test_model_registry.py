@@ -12,19 +12,18 @@ from unittest import mock
 import pytest
 
 from consilium.model_registry import (
+    _PROVIDER_LISTERS,
     DEFAULTS,
     ModelInfo,
     _classify_tier,
     _extract_version_tuple,
     _is_openai_chat_model,
-    _PROVIDER_LISTERS,
     clear_cache,
     get_default_models,
     get_latest,
     list_models,
     set_cache_ttl,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -552,13 +551,15 @@ class TestGetLatest:
 
     def test_no_fallback_raises(self):
         """If no match and no fallback for the tier, raise ValueError."""
-        with mock.patch(
-            "consilium.model_registry.list_models",
-            return_value=[],
+        # reasoning tier has no fallback for anthropic
+        with (
+            mock.patch(
+                "consilium.model_registry.list_models",
+                return_value=[],
+            ),
+            pytest.raises(ValueError, match="No model found"),
         ):
-            # reasoning tier has no fallback for anthropic
-            with pytest.raises(ValueError, match="No model found"):
-                get_latest("anthropic", "reasoning")
+            get_latest("anthropic", "reasoning")
 
 
 # ---------------------------------------------------------------------------
@@ -820,6 +821,8 @@ class TestProvidersIntegration:
         returns DEFAULT_MODELS."""
         from consilium.providers import (
             DEFAULT_MODELS,
+        )
+        from consilium.providers import (
             get_default_models as prov_defaults,
         )
 

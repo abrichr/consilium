@@ -12,7 +12,6 @@ import concurrent.futures
 import dataclasses
 import string
 import time
-from typing import Dict, List
 
 from consilium.cost import CostTracker, TokenUsage
 from consilium.providers import (
@@ -49,13 +48,13 @@ class CouncilResult:
     """Full result from a council query across all three stages."""
 
     final_answer: str
-    individual_responses: List[IndividualResponse]
-    reviews: List[Review]
+    individual_responses: list[IndividualResponse]
+    reviews: list[Review]
     cost_tracker: CostTracker
     total_latency_seconds: float
 
     @property
-    def cost_breakdown(self) -> Dict[str, float]:
+    def cost_breakdown(self) -> dict[str, float]:
         return self.cost_tracker.breakdown_by_model()
 
     @property
@@ -69,7 +68,7 @@ class CouncilResult:
 _LABELS = list(string.ascii_uppercase)
 
 
-def _anonymize_responses(responses: List[IndividualResponse]) -> str:
+def _anonymize_responses(responses: list[IndividualResponse]) -> str:
     """Format responses as anonymized text for the review prompt."""
     parts = []
     for i, resp in enumerate(responses):
@@ -97,12 +96,12 @@ class Council:
 
     def __init__(
         self,
-        models: List[str | ProviderConfig] | None = None,
+        models: list[str | ProviderConfig] | None = None,
         chairman: str | ProviderConfig | None = None,
         max_workers: int = 8,
     ) -> None:
         raw_models = models if models is not None else get_default_models()
-        self.configs: List[ProviderConfig] = [
+        self.configs: list[ProviderConfig] = [
             m if isinstance(m, ProviderConfig) else parse_model_string(m)
             for m in raw_models
         ]
@@ -212,7 +211,7 @@ class Council:
         system: str | None,
         tracker: CostTracker,
         json_schema: dict | None = None,
-    ) -> List[IndividualResponse]:
+    ) -> list[IndividualResponse]:
         def _query_one(cfg: ProviderConfig) -> IndividualResponse:
             t0 = time.monotonic()
             text, usage = query_model(
@@ -254,12 +253,12 @@ class Council:
     def _stage2(
         self,
         original_prompt: str,
-        responses: List[IndividualResponse],
+        responses: list[IndividualResponse],
         *,
         images: list[bytes] | None,
         system: str | None,
         tracker: CostTracker,
-    ) -> List[Review]:
+    ) -> list[Review]:
         anonymized = _anonymize_responses(responses)
         review_prompt = (
             f"You are reviewing responses to the following question:\n\n"
@@ -308,8 +307,8 @@ class Council:
     def _stage3(
         self,
         original_prompt: str,
-        responses: List[IndividualResponse],
-        reviews: List[Review],
+        responses: list[IndividualResponse],
+        reviews: list[Review],
         *,
         images: list[bytes] | None,
         system: str | None,

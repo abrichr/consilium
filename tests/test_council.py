@@ -11,20 +11,19 @@ from unittest import mock
 
 import pytest
 
-from consilium.cost import CostTracker, TokenUsage
 from consilium.core import (
     Council,
     CouncilResult,
     IndividualResponse,
     _anonymize_responses,
 )
+from consilium.cost import CostTracker, TokenUsage
 from consilium.providers import (
     ProviderConfig,
     parse_model_string,
     query_model,
 )
-from consilium.sdk import council_query, _result_to_dict
-
+from consilium.sdk import _result_to_dict, council_query
 
 # ---------------------------------------------------------------------------
 # Helpers

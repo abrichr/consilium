@@ -20,7 +20,6 @@ import re
 import threading
 import time
 from datetime import datetime, timezone
-from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +46,7 @@ class ModelInfo:
 # Hardcoded fallback defaults
 # ---------------------------------------------------------------------------
 
-DEFAULTS: Dict[str, Dict[str, str]] = {
+DEFAULTS: dict[str, dict[str, str]] = {
     "openai": {
         "flagship": "gpt-5.2",
         "fast": "gpt-5-mini",
@@ -94,7 +93,7 @@ _GOOGLE_TIER_PATTERNS = [
     (re.compile(r"pro", re.IGNORECASE), "flagship"),
 ]
 
-_TIER_PATTERNS: Dict[str, list] = {
+_TIER_PATTERNS: dict[str, list] = {
     "openai": _OPENAI_TIER_PATTERNS,
     "anthropic": _ANTHROPIC_TIER_PATTERNS,
     "google": _GOOGLE_TIER_PATTERNS,
@@ -144,7 +143,7 @@ def _extract_version_tuple(model_id: str) -> tuple[int, ...]:
 _DEFAULT_TTL_SECONDS = 3600  # 1 hour
 
 _cache_lock = threading.Lock()
-_cache: Dict[str, tuple[float, List[ModelInfo]]] = {}
+_cache: dict[str, tuple[float, list[ModelInfo]]] = {}
 _ttl_seconds: float = _DEFAULT_TTL_SECONDS
 
 
@@ -156,12 +155,13 @@ def set_cache_ttl(seconds: float) -> None:
 
 def clear_cache() -> None:
     """Clear the model list cache."""
-    global _cache
+    # No `global _cache` needed: this mutates the dict in place rather than
+    # rebinding the name. `set_cache_ttl` does rebind, so it keeps its.
     with _cache_lock:
         _cache.clear()
 
 
-def _get_cached(provider: str) -> List[ModelInfo] | None:
+def _get_cached(provider: str) -> list[ModelInfo] | None:
     """Return cached model list if still valid, else None."""
     with _cache_lock:
         entry = _cache.get(provider)
@@ -174,7 +174,7 @@ def _get_cached(provider: str) -> List[ModelInfo] | None:
         return models
 
 
-def _set_cached(provider: str, models: List[ModelInfo]) -> None:
+def _set_cached(provider: str, models: list[ModelInfo]) -> None:
     """Store model list in cache."""
     with _cache_lock:
         _cache[provider] = (time.monotonic(), models)
@@ -207,7 +207,7 @@ def _is_openai_chat_model(model_id: str) -> bool:
     return not any(kw in model_lower for kw in _OPENAI_DENY_KEYWORDS)
 
 
-def _list_openai() -> List[ModelInfo]:
+def _list_openai() -> list[ModelInfo]:
     """List chat-capable models from OpenAI API."""
     import openai
 
@@ -232,7 +232,7 @@ def _list_openai() -> List[ModelInfo]:
     return models
 
 
-def _list_anthropic() -> List[ModelInfo]:
+def _list_anthropic() -> list[ModelInfo]:
     """List Claude models from Anthropic API."""
     import anthropic
 
@@ -264,7 +264,7 @@ def _list_anthropic() -> List[ModelInfo]:
     return models
 
 
-def _list_google() -> List[ModelInfo]:
+def _list_google() -> list[ModelInfo]:
     """List Gemini content-generation models from Google API."""
     from google import genai
 
@@ -278,8 +278,7 @@ def _list_google() -> List[ModelInfo]:
             continue
         model_id = getattr(m, "name", str(m))
         # Google model names are prefixed with "models/"
-        if model_id.startswith("models/"):
-            model_id = model_id[len("models/"):]
+        model_id = model_id.removeprefix("models/")
         # Only include Gemini models
         if "gemini" not in model_id.lower():
             continue
@@ -307,7 +306,7 @@ _PROVIDER_LISTERS = {
 # ---------------------------------------------------------------------------
 
 
-def list_models(provider: str) -> List[ModelInfo]:
+def list_models(provider: str) -> list[ModelInfo]:
     """List available models from a provider's API.
 
     Results are cached for the configured TTL (default 1 hour).
@@ -412,7 +411,7 @@ def get_latest(provider: str, tier: str = "flagship") -> str:
     )
 
 
-def get_default_models() -> List[str]:
+def get_default_models() -> list[str]:
     """Return a list of default models (one flagship per provider).
 
     Each entry is in ``"provider/model_id"`` format so that
